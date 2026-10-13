@@ -1,0 +1,16 @@
+{
+  "name": "恋人类型自测 · 你是哪一型",
+  "short_name": "恋人类型",
+  "description": "12 道题测出你的恋人类型，并告诉你最适合什么型配偶",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF8F2",
+  "theme_color": "#F8DCE6",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

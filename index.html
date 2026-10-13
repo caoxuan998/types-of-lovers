@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#F8DCE6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="恋人类型">
+<title>恋人类型自测 · 你是哪一型</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<style>
+  :root{
+    --gold:#C9A063; --gold-deep:#B08A4F; --gold-soft:#E8D3A8;
+    --pink:#F8DCE6; --pink-soft:#FCEEF3; --pink-deep:#EBA9C2;
+    --ink:#5C4A52; --ink-soft:#9A8590; --bg:#FFF8F2;
+    --card:#FFFFFF; --line:#F0E2D6;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:linear-gradient(180deg,#FFF8F2 0%, #FCEEF3 100%);
+    color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    min-height:100vh; min-height:100dvh; -webkit-font-smoothing:antialiased;
+  }
+  #app{max-width:480px; margin:0 auto; padding:18px 18px 40px; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
+  .brand{font-size:13px; letter-spacing:2px; color:var(--gold-deep); font-weight:600;}
+  .install-btn{border:1px solid var(--gold); color:var(--gold-deep); background:#fff; font-size:12px; padding:5px 11px; border-radius:20px; cursor:pointer; font-weight:600;}
+  .install-btn:active{transform:scale(.96);}
+  .view{flex:1; display:flex; flex-direction:column; justify-content:center;}
+  .hidden{display:none !important;}
+
+  .home-title{font-size:30px; font-weight:800; text-align:center; margin:10px 0 6px; line-height:1.3;}
+  .home-sub{text-align:center; color:var(--ink-soft); font-size:14px; margin-bottom:34px; line-height:1.7;}
+  .start-btn{display:block; width:100%; border:none; border-radius:18px; padding:18px; font-size:19px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--gold),var(--gold-deep)); box-shadow:0 8px 20px rgba(176,138,79,.35); cursor:pointer;}
+  .start-btn:active{transform:scale(.98);}
+  .home-tip{text-align:center; font-size:12px; color:var(--ink-soft); margin-top:18px; line-height:1.6;}
+
+  .quiz-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+  .quiz-back{font-size:13px; color:var(--gold-deep); cursor:pointer; background:none; border:none; padding:4px 0;}
+  .quiz-prog{font-size:13px; color:var(--ink-soft);}
+  .bar{height:8px; background:var(--pink); border-radius:6px; overflow:hidden; margin:8px 0 24px;}
+  .bar > i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--gold-soft),var(--gold)); border-radius:6px; transition:width .3s;}
+  .q-index{font-size:13px; color:var(--gold-deep); font-weight:700; letter-spacing:1px;}
+  .q-text{font-size:22px; font-weight:700; line-height:1.5; margin:8px 0 26px;}
+  .opt{background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:16px; margin-bottom:13px; font-size:16px; cursor:pointer; display:flex; align-items:center; gap:12px; transition:.12s; color:var(--ink); box-shadow:0 3px 10px rgba(201,160,99,.06);}
+  .opt:active{transform:scale(.985); border-color:var(--gold); background:var(--pink-soft);}
+  .opt .dot{flex:0 0 24px; width:24px; height:24px; border-radius:50%; border:1.5px solid var(--gold-soft); color:var(--gold-deep); font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center;}
+
+  .r-name{font-size:26px; font-weight:800; text-align:center; margin:6px 0 2px;}
+  .r-tag{text-align:center; font-size:14px; color:var(--gold-deep); font-weight:600; margin-bottom:18px;}
+  .r-chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:18px;}
+  .r-chips span{background:var(--pink-soft); color:var(--ink); font-size:13px; padding:6px 12px; border-radius:20px; border:1px solid var(--line);}
+  .r-block{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px 18px; margin-bottom:14px; box-shadow:0 4px 14px rgba(201,160,99,.08);}
+  .r-block h4{margin:0 0 6px; font-size:15px; color:var(--gold-deep);}
+  .r-block p{margin:0; font-size:15px; line-height:1.7; color:var(--ink);}
+  .r-match{background:linear-gradient(135deg,#FFF1F6,#FCEEF3); border:1.5px solid var(--gold-soft);}
+  .r-match .mt{font-size:20px; font-weight:800; color:var(--gold-deep); margin:2px 0 6px;}
+  .r-quote{text-align:center; font-size:16px; font-weight:700; color:var(--ink); line-height:1.7; margin:18px 6px 22px;}
+  .r-actions{display:flex; gap:12px;}
+  .btn{flex:1; border:none; border-radius:16px; padding:15px; font-size:16px; font-weight:700; cursor:pointer;}
+  .btn-share{background:linear-gradient(135deg,var(--gold),var(--gold-deep)); color:#fff; box-shadow:0 6px 16px rgba(176,138,79,.35);}
+  .btn-again{background:#fff; color:var(--gold-deep); border:1.5px solid var(--gold);}
+  .btn:active{transform:scale(.97);}
+
+  .banner{position:fixed; left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom)); max-width:456px; margin:0 auto; background:#fff; border:1.5px solid var(--gold); border-radius:16px; padding:14px 16px; display:flex; align-items:center; gap:12px; box-shadow:0 8px 24px rgba(176,138,79,.25); z-index:50; transform:translateY(140%); transition:transform .35s ease;}
+  .banner.show{transform:translateY(0);}
+  .banner-emoji{font-size:28px;}
+  .banner-txt{flex:1; font-size:13px; color:var(--ink); line-height:1.4;}
+  .banner-txt b{color:var(--gold-deep);}
+  .banner-go{background:linear-gradient(135deg,var(--gold),var(--gold-deep)); color:#fff; border:none; border-radius:12px; padding:9px 14px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap;}
+  .banner-x{background:none; border:none; color:var(--ink-soft); font-size:20px; cursor:pointer; padding:0 2px; line-height:1;}
+
+  .modal-mask{position:fixed; inset:0; background:rgba(60,40,50,.45); display:flex; align-items:center; justify-content:center; z-index:60; padding:24px; opacity:0; pointer-events:none; transition:opacity .25s;}
+  .modal-mask.show{opacity:1; pointer-events:auto;}
+  .modal{background:#fff; border-radius:22px; padding:26px 22px; max-width:360px; width:100%; transform:scale(.92); transition:transform .25s; box-shadow:0 12px 40px rgba(0,0,0,.2);}
+  .modal-mask.show .modal{transform:scale(1);}
+  .modal h3{margin:0 0 10px; font-size:20px; color:var(--ink); text-align:center;}
+  .modal p{font-size:14px; line-height:1.7; color:var(--ink); margin:8px 0;}
+  .modal .steps{background:var(--pink-soft); border-radius:14px; padding:14px 16px; margin:14px 0; font-size:14px; line-height:1.8; color:var(--ink);}
+  .modal button{width:100%; margin-top:8px; border:none; border-radius:14px; padding:14px; font-size:16px; font-weight:700; cursor:pointer;}
+  .modal .m-ok{background:linear-gradient(135deg,var(--gold),var(--gold-deep)); color:#fff;}
+  .modal .m-close{background:#fff; color:var(--ink-soft); border:1px solid var(--line); margin-top:10px;}
+  footer{text-align:center; font-size:11px; color:var(--ink-soft); margin-top:26px; line-height:1.6;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <span class="brand">恋人类型自测</span>
+    <button class="install-btn" id="installBtn">＋桌面</button>
+  </div>
+
+  <!-- HOME -->
+  <section class="view" id="home">
+    <h1 class="home-title">你是哪一型恋人</h1>
+    <p class="home-sub">12 道题，测出你的恋人类型<br>并告诉你，最适合你的另一半是哪一型</p>
+    <button class="start-btn" id="startBtn">开始测试</button>
+    <p class="home-tip">男生女生都能测 · 测完出「你的型」+「适合什么型配偶」<br>本测试为娱乐参考，不作科学测算</p>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="view hidden" id="quiz">
+    <div class="quiz-head">
+      <button class="quiz-back" id="backBtn">← 返回</button>
+      <span class="quiz-prog" id="prog">第 1 / 12 题</span>
+    </div>
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="q-index" id="qIndex">QUESTION 01</div>
+    <div class="q-text" id="qText"></div>
+    <div id="optList"></div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="view hidden" id="result">
+    <div class="r-name" id="rName"></div>
+    <div class="r-tag" id="rTag"></div>
+    <div class="r-chips" id="rChips"></div>
+    <div class="r-block"><h4>你爱上一个人的样子</h4><p id="rLove"></p></div>
+    <div class="r-block"><h4>小心雷区</h4><p id="rMine"></p></div>
+    <div class="r-block r-match">
+      <h4>最适合你的另一半</h4>
+      <div class="mt" id="rMatch"></div>
+      <p id="rMatchWhy"></p>
+    </div>
+    <div class="r-quote" id="rQuote"></div>
+    <div class="r-actions">
+      <button class="btn btn-share" id="shareBtn">保存结果图</button>
+      <button class="btn btn-again" id="againBtn">再测一次</button>
+    </div>
+  </section>
+
+  <footer>愿你遇到同频的人 · 恋爱自测系列</footer>
+</div>
+
+<div class="banner" id="banner">
+  <div class="banner-emoji">💗</div>
+  <div class="banner-txt">把<b>恋人类型自测</b>装到桌面，<br>随时点开就能测</div>
+  <button class="banner-go" id="bannerGo">装到桌面</button>
+  <button class="banner-x" id="bannerX">×</button>
+</div>
+
+<div class="modal-mask" id="modal">
+  <div class="modal">
+    <h3 id="mTitle">装到桌面</h3>
+    <p id="mDesc">按下面步骤，把恋人类型自测变成手机 / 电脑上的独立小应用。</p>
+    <div class="steps" id="mSteps"></div>
+    <button class="m-ok" id="mOk">好的</button>
+    <button class="m-close" id="mClose">暂不需要</button>
+  </div>
+</div>
+
+<script>
+  /* ---------- 题库：12 题，每题 4 选项映射 4 型（A守护/B直球/C自由/D粘人） ---------- */
+  var QUIZ = [
+    {q:"恋爱里你最看重的是？", o:["稳定和安心","心跳与热烈","彼此有空间","时刻被在乎"], t:["guard","direct","free","clingy"]},
+    {q:"对方半天没回消息，你？", o:["理解 TA 在忙","直接打电话问","正好自己也有事","有点慌一直看手机"], t:["guard","direct","free","clingy"]},
+    {q:"表达爱意，你更偏向？", o:["默默做好每件小事","直接说我爱你","各自精彩偶尔分享","时刻黏在一起"], t:["guard","direct","free","clingy"]},
+    {q:"吵架时你通常？", o:["先冷静再沟通","当场说清楚不憋着","需要独处消化","怕冷战立刻求和"], t:["guard","direct","free","clingy"]},
+    {q:"理想的周末是？", o:["一起踏踏实实待着","出去约会玩大的","各做各的再汇合","整天黏着不分开"], t:["guard","direct","free","clingy"]},
+    {q:"送礼物你更在意？", o:["实用又贴心","惊喜和浪漫","不送也行心意到","仪式感必须满满"], t:["guard","direct","free","clingy"]},
+    {q:"你理想的亲密距离是？", o:["紧挨但舒服","越近越好","需要呼吸感","24 小时连线"], t:["guard","direct","free","clingy"]},
+    {q:"恋人让你最有安全感的是？", o:["TA 始终都在","TA 直白地选我","TA 尊重我的独立","TA 秒回我"], t:["guard","direct","free","clingy"]},
+    {q:"你容易在感情里？", o:["过度付出忽略自己","上头太快","显得太冷淡","患得患失"], t:["guard","direct","free","clingy"]},
+    {q:"朋友说你谈恋爱像？", o:["暖心港湾","烟火热烈","潇洒独立","连体婴"], t:["guard","direct","free","clingy"]},
+    {q:"你觉得「爱」是？", o:["细水长流","轰轰烈烈","舒服做自己","被需要被惦记"], t:["guard","direct","free","clingy"]},
+    {q:"TA 说想独处几天，你？", o:["尊重并说我在","有点失落但理解","正好我也想静静","担心是不是不爱了"], t:["guard","direct","free","clingy"]}
+  ];
+
+  /* ---------- 类型定义：你的型 + 适合配偶型 ---------- */
+  var TYPES = {
+    guard:{name:"温柔守护型恋人", tag:"你是恋人的避风港，爱得稳、给得久", traits:["稳定","体贴","默默付出","情绪稳"],
+      love:"把对方放进日常里，用行动而不是言语去爱——一顿饭、一句晚安、一件小事，都是你表达的方式。",
+      mine:"容易过度付出而忽略自己，受了委屈也憋着不说，久了会委屈。",
+      match:["direct","clingy"], matchWhy:"你给的安稳，正好接住需要被明确爱与陪伴的人——他们能被你稳稳托住。",
+      quote:"你给的安稳，是有些人求而不得的归宿。"},
+    direct:{name:"热烈直球型恋人", tag:"爱就要大声说，上头就往前冲", traits:["主动","直接","浪漫","情绪外放"],
+      love:"喜欢就直接表达，制造惊喜，不玩猜猜猜。你的喜欢是看得见的、热的、往前冲的。",
+      mine:"热情来得快也容易累，最怕对方的冷漠和回避，会瞬间泄气。",
+      match:["guard","free"], matchWhy:"你需要一个能稳稳接住你的人——守护型给你安心，自由型懂你偶尔需要空间。",
+      quote:"你的热烈，刚好能融化一座冰山。"},
+    free:{name:"独立自由型恋人", tag:"爱你也爱自己，给彼此呼吸感", traits:["独立","理性","需要空间","不喜捆绑"],
+      love:"各自精彩，再舒服地在一起。你相信好的爱情是「做自己」而不是「绑在一起」。",
+      mine:"常常显得太冷淡，对方容易误以为你不在意——其实你只是需要空间。",
+      match:["guard","free"], matchWhy:"给你空间又不远离的守护型，或同频的自由型，和你最舒服。",
+      quote:"最好的爱，是让你自由地做自己。"},
+    clingy:{name:"粘人依恋型恋人", tag:"要时刻被惦记，爱里需要很多确认", traits:["依赖","需要陪伴","在意回应","忠诚"],
+      love:"时刻想连线，用陪伴和回应证明爱。被好好对待时，你会给出满满的甜。",
+      mine:"容易患得患失，给太多关注反而让对方有压力，要学着松一点。",
+      match:["guard","direct"], matchWhy:"能给你安全感的守护型，或明确回应你的直球型，最让你安心。",
+      quote:"被好好回应，你才敢放心去爱。"}
+  };
+  var ORDER = ["guard","direct","free","clingy"];
+
+  /* ---------- 状态 ---------- */
+  var idx = 0, count = {guard:0, direct:0, free:0, clingy:0}, answers = [];
+  var $ = function(id){ return document.getElementById(id); };
+
+  function showView(v){
+    ['home','quiz','result'].forEach(function(k){ $(k).classList.toggle('hidden', k!==v); });
+    window.scrollTo(0,0);
+  }
+
+  /* ---------- HOME ---------- */
+  $('startBtn').onclick = function(){
+    idx = 0; count = {guard:0, direct:0, free:0, clingy:0}; answers = [];
+    showView('quiz'); renderQ();
+  };
+
+  /* ---------- QUIZ ---------- */
+  function renderQ(){
+    var item = QUIZ[idx];
+    $('prog').textContent = '第 ' + (idx+1) + ' / ' + QUIZ.length + ' 题';
+    $('qIndex').textContent = 'QUESTION ' + (idx+1<10?'0'+(idx+1):(idx+1));
+    $('qText').textContent = item.q;
+    $('barFill').style.width = (idx / QUIZ.length * 100) + '%';
+    var ol = $('optList'); ol.innerHTML = '';
+    var labels = ['A','B','C','D'];
+    item.o.forEach(function(text, i){
+      var div = document.createElement('div');
+      div.className = 'opt';
+      div.innerHTML = '<span class="dot">'+labels[i]+'</span><span>'+text+'</span>';
+      div.onclick = function(){ choose(i); };
+      ol.appendChild(div);
+    });
+  }
+
+  function choose(i){
+    count[QUIZ[idx].t[i]]++;
+    answers[idx] = i;
+    if(idx < QUIZ.length - 1){
+      idx++; $('barFill').style.width = (idx / QUIZ.length * 100) + '%'; renderQ();
+    } else {
+      $('barFill').style.width = '100%'; showResult();
+    }
+  }
+
+  $('backBtn').onclick = function(){
+    if(idx === 0){ showView('home'); return; }
+    idx--; count[QUIZ[idx].t[answers[idx]]]--; renderQ();
+  };
+
+  /* ---------- RESULT ---------- */
+  function topType(){
+    var best = ORDER[0], max = -1;
+    ORDER.forEach(function(k){ if(count[k] > max){ max = count[k]; best = k; } });
+    return best;
+  }
+
+  function showResult(){
+    var key = topType();
+    var T = TYPES[key];
+    showView('result');
+    $('rName').textContent = '你是「' + T.name + '」';
+    $('rTag').textContent = T.tag;
+    var chips = $('rChips'); chips.innerHTML = '';
+    T.traits.forEach(function(t){ var s=document.createElement('span'); s.textContent=t; chips.appendChild(s); });
+    $('rLove').textContent = T.love;
+    $('rMine').textContent = T.mine;
+    // 优先匹配第一个型，给出名字 + 理由
+    var mKey = T.match[0];
+    $('rMatch').textContent = '『' + TYPES[mKey].name + '』';
+    $('rMatchWhy').textContent = T.matchWhy;
+    $('rQuote').textContent = '「' + T.quote + '」';
+    $('againBtn').onclick = function(){ showView('home'); };
+    $('shareBtn').onclick = function(){ shareCard(T, mKey); };
+  }
+
+  /* ---------- 分享卡 ---------- */
+  function shareCard(T, mKey){
+    var cv = document.createElement('canvas');
+    var W = 1080, H = 1350; cv.width = W; cv.height = H;
+    var x = cv.getContext('2d');
+    var g = x.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,'#FFF8F2'); g.addColorStop(1,'#FCEEF3');
+    x.fillStyle = g; x.fillRect(0,0,W,H);
+    // 标题
+    x.fillStyle = '#5C4A52'; x.textAlign = 'center';
+    x.font = '800 60px sans-serif'; x.fillText('你是哪一型恋人', W/2, 140);
+    x.fillStyle = '#C9A063'; x.font = '400 30px sans-serif';
+    x.fillText('恋人类型自测 · 12 题看清自己', W/2, 190);
+    // 你的型
+    x.fillStyle = '#5C4A52'; x.font = '800 70px sans-serif';
+    x.fillText('「' + T.name + '」', W/2, 320);
+    x.fillStyle = '#B08A4F'; x.font = '400 32px sans-serif';
+    x.fillText(T.tag, W/2, 372);
+    // 特质 chips
+    x.font = '400 30px sans-serif';
+    var txt = T.traits.join('   ·   ');
+    x.fillStyle = '#9A8590'; x.fillText(txt, W/2, 440);
+    // 适合配偶
+    x.fillStyle = '#5C4A52'; x.font = '800 46px sans-serif';
+    x.fillText('最适合你的另一半', W/2, 560);
+    x.fillStyle = '#B08A4F'; x.font = '800 60px sans-serif';
+    x.fillText('『' + TYPES[mKey].name + '』', W/2, 640);
+    // 金句框
+    x.fillStyle = '#FCEEF3'; roundRect(x, 90, 720, W-180, 200, 24); x.fill();
+    x.strokeStyle = '#E8D3A8'; x.lineWidth = 2; roundRect(x, 90, 720, W-180, 200, 24); x.stroke();
+    x.fillStyle = '#5C4A52'; x.font = '700 40px sans-serif';
+    wrapText(x, '「' + T.quote + '」', W/2, 800, W-260, 56);
+    // 底部
+    x.fillStyle = '#9A8590'; x.font = '400 28px sans-serif';
+    x.fillText('长按保存图片 · 测测你是哪一型', W/2, H-70);
+    try{
+      var url = cv.toDataURL('image/png');
+      var a = document.createElement('a'); a.href = url; a.download = '恋人类型结果.png'; a.click();
+    }catch(e){ alert('保存失败，请截图当前页面结果。'); }
+  }
+  function roundRect(ctx, x, y, w, h, r){
+    ctx.beginPath(); ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+  }
+  function wrapText(ctx, text, cx, y, maxW, lh){
+    var line = '';
+    for(var i=0;i<text.length;i++){
+      var t = line + text[i];
+      if(ctx.measureText(t).width > maxW && line){ ctx.fillText(line, cx, y); line = text[i]; y += lh; }
+      else { line = t; }
+    }
+    if(line) ctx.fillText(line, cx, y);
+  }
+
+  /* ---------- 安装三分支 ---------- */
+  var deferredPrompt = null;
+  var INSTALL_KEY = 'lovertype-install';
+  function setupInstall(){
+    window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); deferredPrompt = e; showBanner(); });
+    window.addEventListener('appinstalled', function(){ try{localStorage.setItem(INSTALL_KEY,'yes');}catch(e){} hideBanner(); });
+    $('installBtn').onclick = function(){
+      if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt = null; hideBanner(); }
+      else { showManual(); }
+    };
+    setTimeout(function(){ try{ if(localStorage.getItem(INSTALL_KEY)!=='yes') showBanner(); }catch(e){ showBanner(); } }, 1500);
+  }
+  function showBanner(){ var b=$('banner'); if(b) b.classList.add('show'); }
+  function hideBanner(){ var b=$('banner'); if(b) b.classList.remove('show'); }
+  function showManual(){
+    var isIOS = /iP(ad|hone|od)/.test(navigator.userAgent) || (navigator.userAgent.indexOf('Mac')>-1 && 'ontouchend' in document);
+    $('mTitle').textContent = isIOS ? '装到 iPhone / iPad' : '装到桌面';
+    if(isIOS){
+      $('mDesc').textContent = '用 Safari 打开本页面，按下面步骤添加到主屏幕。';
+      $('mSteps').innerHTML = '1. 点浏览器底部中间的「分享」按钮<br>2. 向上滑，找到「添加到主屏幕」<br>3. 点「添加」，就能在桌面找到';
+    } else {
+      $('mDesc').textContent = '用 Chrome / Edge 打开本页面，按下面步骤安装。';
+      $('mSteps').innerHTML = '电脑：点地址栏右侧「安装 📥」图标，或右上角 ⋮ →「安装应用」<br><br>手机：点右上角 ⋮ →「安装应用 / 添加到主屏幕」<br><br>也可把当前标签页拖到桌面';
+    }
+    $('modal').classList.add('show');
+  }
+  $('bannerGo').onclick = function(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; hideBanner(); } else { hideBanner(); showManual(); } };
+  $('bannerX').onclick = function(){ try{localStorage.setItem(INSTALL_KEY,'yes');}catch(e){} hideBanner(); };
+  $('mOk').onclick = function(){ $('modal').classList.remove('show'); };
+  $('mClose').onclick = function(){ try{localStorage.setItem(INSTALL_KEY,'yes');}catch(e){} $('modal').classList.remove('show'); };
+
+  /* ---------- SW ---------- */
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+  }
+
+  setupInstall();
+  showView('home');
+</script>
+</body>
+</html>
